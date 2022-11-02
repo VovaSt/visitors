@@ -1,0 +1,16 @@
+.wrapper {
+  .table-header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  th {
+    white-space: nowrap;
+  }
+}
+
+::ng-deep .ng-trigger.ng-trigger-overlayAnimation.p-datepicker {
+  top: 45px !important;
+  left: -50px !important;
+}

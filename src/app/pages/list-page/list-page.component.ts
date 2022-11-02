@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiService } from 'src/app/services/api.service';
+import { Person } from "../../models/Person.model";
 
 @Component({
   selector: 'app-list-page',
@@ -7,9 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListPageComponent implements OnInit {
 
-  constructor() { }
+  people: Person[] = [];
+
+  constructor(
+    private apiService: ApiService,
+    private router: Router  
+  ) { }
 
   ngOnInit(): void {
+    this.people = this.apiService.getAllPeople();
   }
 
+  getLastVisit(visiting: string[]) {
+    return visiting[0];
+  }
+
+  redirect(id: number) {
+    this.router.navigate(['profile', id]);
+  }
 }

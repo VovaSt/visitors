@@ -3,4 +3,6 @@ export interface Person {
   name: string;
   surname: string;
   fullName?: string;
+  visiting: Date[];
+  lastVisit: Date | undefined;
 }

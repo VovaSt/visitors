@@ -1,1 +1,45 @@
-<p>list-page works!</p>
+<div class="wrapper">
+  <p-table [value]="people" responsiveLayout="scroll">
+    <ng-template pTemplate="caption">
+        Список відвідувачів
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="surname">
+          ПІБ <p-sortIcon field="code"></p-sortIcon>
+        </th>
+        <th pSortableColumn="lastVisit">
+          Візит <p-sortIcon field="code"></p-sortIcon>
+        </th>
+        <th>
+          <p-columnFilter 
+            type="date" 
+            field="lastVisit" 
+            display="menu"  
+            [showOperator]="false" 
+            [showAddButton]="false"
+          ></p-columnFilter>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-person>
+      <tr>
+        <td>{{person.surname}} {{person.name}}</td>
+        <td>{{(person.lastVisit | date:"d MMM y") || "не відвідував"}}</td>
+        <td>
+          <button 
+            pButton 
+            type="button" 
+            class="p-button-sm p-button-outlined" 
+            icon="pi pi-arrow-right" 
+            iconPos="left"
+            (click)="redirect(person.id)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      Всього {{people.length}} відвідувачів
+    </ng-template>
+  </p-table>
+</div>

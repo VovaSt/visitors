@@ -1,7 +1,4 @@
-<p-menubar 
-  [model]="items"
-  (click)="goTo($event)"
-  >
+<p-menubar [model]="items">
   <ng-template pTemplate="end">
     <div class="title-container">
       <span class="main-title">ГУМКА</span>
@@ -9,4 +6,5 @@
     </div>
   </ng-template>
 </p-menubar>
+
 <router-outlet></router-outlet>

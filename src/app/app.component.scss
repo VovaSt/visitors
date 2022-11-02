@@ -22,13 +22,14 @@ p-menubar ::ng-deep .p-menubar {
   gap: 12px;
 
   .main-icon {
-    height: 32px; 
+    height: 32px;
+    margin-top: 2px;
   }
 
   .main-title {
-    font-size: 25px;
+    font-size: 30px;
     font-weight: bold;
     color: white;
-    line-height: 1;
+    line-height: 32px;
   }
 }
