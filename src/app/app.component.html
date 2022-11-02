@@ -1,1 +1,12 @@
-hello
+<p-menubar 
+  [model]="items"
+  (click)="goTo($event)"
+  >
+  <ng-template pTemplate="end">
+    <div class="title-container">
+      <span class="main-title">ГУМКА</span>
+      <img class="main-icon"src="assets/Logo.svg" alt="">
+    </div>
+  </ng-template>
+</p-menubar>
+<router-outlet></router-outlet>

@@ -1,0 +1,12 @@
+<div class="wrapper">
+  <p-autoComplete 
+    [(ngModel)]="text" 
+    [suggestions]="results$ | async" 
+    field="fullName"
+    (completeMethod)="search($event)"
+    (onSelect)="select($event)"
+    placeholder="Вкажіть ПІБ відвідувача..."
+    [showEmptyMessage]="true"
+    emptyMessage="Співпадінь не знайдено"
+  ></p-autoComplete>
+</div>

@@ -1,0 +1,19 @@
+.wrapper {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+
+  p-autocomplete {
+    width: 100%;
+    max-width: 500px;
+    
+    &::ng-deep .p-autocomplete {
+        width: 100%;
+    
+        .p-autocomplete-input {
+        width: 100%;
+        }
+    }
+  }
+}
+

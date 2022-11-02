@@ -1,0 +1,34 @@
+p-menubar ::ng-deep .p-menubar {
+  background-color: var(--primary-900);
+  border-radius: 0px;
+
+  .p-menubar-button .pi-bars {
+    color: white;
+  }
+
+  @media screen and (min-width: 961px) {
+    .p-menuitem-icon {
+        color: white !important;
+      }
+    
+      .p-menuitem-text {
+        color: white !important;
+      }
+  }
+}
+
+.title-container {
+  display: flex;
+  gap: 12px;
+
+  .main-icon {
+    height: 32px; 
+  }
+
+  .main-title {
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    line-height: 1;
+  }
+}
