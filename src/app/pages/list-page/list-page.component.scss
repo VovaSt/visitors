@@ -8,6 +8,11 @@
   th {
     white-space: nowrap;
   }
+
+  .visit-column {
+    white-space: nowrap;
+    padding: 1rem 0.25rem;
+  }
 }
 
 ::ng-deep .ng-trigger.ng-trigger-overlayAnimation.p-datepicker {

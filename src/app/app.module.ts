@@ -8,6 +8,11 @@ import { MenubarModule } from 'primeng/menubar';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
+import { CalendarModule } from 'primeng/calendar';
 
 import { ApiService } from "./services/api.service";
 
@@ -19,6 +24,7 @@ import { ProfilePageComponent } from './pages/profile-page/profile-page.componen
 
 import { registerLocaleData } from '@angular/common';
 import localeUk from '@angular/common/locales/uk';
+import { SortDatesPipe } from './pipes/sort-dates.pipe';
 registerLocaleData(localeUk);
 
 @NgModule({
@@ -27,7 +33,8 @@ registerLocaleData(localeUk);
     SearchPageComponent,
     AddPageComponent,
     ListPageComponent,
-    ProfilePageComponent
+    ProfilePageComponent,
+    SortDatesPipe
   ],
   imports: [
     BrowserModule,
@@ -37,10 +44,15 @@ registerLocaleData(localeUk);
     MenubarModule,
     AutoCompleteModule,
     TableModule,
-    ButtonModule
+    ButtonModule,
+    CardModule,
+    AccordionModule,
+    ConfirmPopupModule,
+    CalendarModule
   ],
   providers: [
     ApiService,
+    ConfirmationService,
     { provide: LOCALE_ID, useValue: "uk" }
   ],
   bootstrap: [AppComponent]

@@ -1,0 +1,41 @@
+.person_name {
+  margin: unset;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.last-visit {
+  margin-bottom: 20px;
+}
+
+.add-visit {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  max-width: 350px;
+
+  p-calendar {
+    flex: 1
+  }
+}
+
+.visit-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+::ng-deep .p-confirm-popup:after, 
+::ng-deep .p-confirm-popup:before {
+  display: none;
+}

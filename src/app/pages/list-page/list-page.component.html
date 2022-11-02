@@ -8,7 +8,7 @@
         <th pSortableColumn="surname">
           ПІБ <p-sortIcon field="code"></p-sortIcon>
         </th>
-        <th pSortableColumn="lastVisit">
+        <th pSortableColumn="lastVisit" class="visit-column">
           Візит <p-sortIcon field="code"></p-sortIcon>
         </th>
         <th>
@@ -17,15 +17,20 @@
             field="lastVisit" 
             display="menu"  
             [showOperator]="false" 
-            [showAddButton]="false"
           ></p-columnFilter>
         </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-person>
       <tr>
-        <td>{{person.surname}} {{person.name}}</td>
-        <td>{{(person.lastVisit | date:"d MMM y") || "не відвідував"}}</td>
+        <td>
+          <div>{{person.surname}}</div>  
+          <div>{{person.name}}</div>
+          <div>{{person.middleName}}</div>
+        </td>
+        <td class="visit-column">
+          {{(person.lastVisit | date:"d MMM y") || "-"}}
+        </td>
         <td>
           <button 
             pButton 

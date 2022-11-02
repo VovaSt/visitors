@@ -1,1 +1,62 @@
-<p>profile-page works!</p>
+<p-card *ngIf="person">
+  <ng-template pTemplate="header">
+    <h3 class="person_name">
+      {{ person.surname }} {{ person.name }} {{ person.middleName }}
+    </h3>
+  </ng-template>
+  
+  <div class="last-visit">
+    <b>Останній візит:</b> 
+    {{(person.lastVisit | date:"d MMMM y") || "не відвідував"}}
+  </div>
+
+  <div class="add-visit">
+    <p-calendar [(ngModel)]="visitValue" dateFormat="d MM yy"></p-calendar>
+
+    <button 
+      pButton 
+      type="button" 
+      class="p-button-success" 
+      (click)="addVisit()"
+    >Додати візит</button>
+  </div>
+
+  <p-accordion>
+    <p-accordionTab *ngIf="person.visiting.length" header="Всі візити" >
+       <div
+        class="visit-container" 
+        *ngFor="let visit of person.visiting | sortDates"
+      >
+        <p>{{visit | date:"d MMMM y"}}</p>
+
+        <button 
+          pButton 
+          type="button" 
+          class="p-button-sm p-button-outlined p-button-danger" 
+          icon="pi pi-times" 
+          iconPos="left"
+          (click)="deleteVisit($event, visit)"
+        ></button>
+       </div>
+    </p-accordionTab>
+
+    <p-accordionTab header="Редагування профілю">
+      <div class="buttons-container">
+        <button 
+          pButton 
+          type="button" 
+          class="p-button-warning" 
+          (click)="editPerson()"
+        >Редагувати</button>
+        <button 
+          pButton 
+          type="button" 
+          class="p-button-danger" 
+          (click)="deletePerson()"
+        >Видалити</button>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</p-card>
+
+<p-confirmPopup></p-confirmPopup>

@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService } from 'primeng/api';
+import { ApiService } from 'src/app/services/api.service';
+import { Person } from "../../models/Person.model";
 
 @Component({
   selector: 'app-profile-page',
@@ -7,9 +11,48 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfilePageComponent implements OnInit {
 
-  constructor() { }
+  id: number;
+  person: Person;
+  visitValue: Date = new Date();
+  visiting: Date[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private apiService: ApiService,
+    private confirmationService: ConfirmationService  
+  ) {}
 
   ngOnInit(): void {
+    this.id = +this.route.snapshot.paramMap.get('id');
+    this.person = this.apiService.getPerson(this.id);
+    this.visiting = this.person.visiting;
   }
 
+  deleteVisit(event: Event, visit: Date) {
+    this.confirmationService.confirm({
+      target: event.target,
+      message: 'Ви дійсно хочете видалити цей візит?',
+      accept: () => {
+        const index = this.person.visiting.indexOf(visit);
+        this.person.visiting.splice(index, 1);
+      }
+    });
+  }
+
+  addVisit() {
+    this.visiting.push(this.visitValue);
+  }
+
+  editPerson() {
+    this.router.navigate(["/"]);
+  }
+
+  deletePerson() {
+    this.confirmationService.confirm({
+      target: event.target,
+      message: 'Ви дійсно хочете видалити цей обліковий запис?',
+      accept: () => this.router.navigate(["/"])
+    });
+  }
 }
