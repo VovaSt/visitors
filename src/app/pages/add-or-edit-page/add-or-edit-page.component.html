@@ -1,0 +1,25 @@
+<div class="wrapper">
+  <h3 class="title">{{title}}</h3>
+  <input 
+    pInputText 
+    [(ngModel)]="surname" 
+    placeholder="Введіть прізвище відвідувача..."
+  >
+  <input 
+    pInputText 
+    [(ngModel)]="name" 
+    placeholder="Введіть ім'я відвідувача..."
+  >
+  <input 
+    pInputText 
+    [(ngModel)]="middleName" 
+    placeholder="Введіть по-батькові відвідувача..."
+  >
+  <button 
+    pButton 
+    type="button" 
+    class="p-button-success" 
+    (click)="addProfile()"
+    [disabled]="!surname && !name && !middleName"
+  >Зберегти</button>
+</div>

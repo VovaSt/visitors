@@ -13,12 +13,13 @@ import { AccordionModule } from 'primeng/accordion';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { ApiService } from "./services/api.service";
 
 import { AppComponent } from './app.component';
 import { SearchPageComponent } from './pages/search-page/search-page.component';
-import { AddPageComponent } from './pages/add-page/add-page.component';
+import { AddOrEditPageComponent } from './pages/add-or-edit-page/add-or-edit-page.component';
 import { ListPageComponent } from './pages/list-page/list-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 
@@ -31,7 +32,7 @@ registerLocaleData(localeUk);
   declarations: [
     AppComponent,
     SearchPageComponent,
-    AddPageComponent,
+    AddOrEditPageComponent,
     ListPageComponent,
     ProfilePageComponent,
     SortDatesPipe
@@ -48,7 +49,8 @@ registerLocaleData(localeUk);
     CardModule,
     AccordionModule,
     ConfirmPopupModule,
-    CalendarModule
+    CalendarModule,
+    InputTextModule
   ],
   providers: [
     ApiService,

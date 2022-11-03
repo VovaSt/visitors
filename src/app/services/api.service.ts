@@ -5,27 +5,27 @@ import { Person } from "../models/Person.model";
 export class ApiService {
 
   private people: Person[] = [
-    { id: 1, name: "Володимир", surname: "Стахов", middleName: "Петрович",
+    { id: "1", name: "Володимир", surname: "Стахов", middleName: "Петрович",
       visiting: [], 
       lastVisit: undefined 
     },
-    { id: 2, name: "Тарас", surname: "Шевченко", middleName: "Васильович",
+    { id: "2", name: "Тарас", surname: "Шевченко", middleName: "Васильович",
       visiting: [new Date("11/04/2022"), new Date("05/05/2022")], 
       lastVisit: new Date("11/04/2022")
     },
-    { id: 3, name: "Андрій", surname: "Миколенко",  middleName: "Миколайович",
+    { id: "3", name: "Андрій", surname: "Миколенко",  middleName: "Миколайович",
       visiting: [new Date("04/07/2022")], 
       lastVisit: new Date("04/07/2022") 
     },
-    { id: 4, name: "Сергій", surname: "Крутивус",  middleName: "Генадієвич",
+    { id: "4", name: "Сергій", surname: "Крутивус",  middleName: "Генадієвич",
       visiting: [new Date("12/04/2022"), new Date("05/05/2022"), new Date("05/25/2022")], 
       lastVisit:  new Date("04/12/2022")
     },
-    { id: 5, name: "Руслан", surname: "Гаврилюк",  middleName: "Андрійович",
+    { id: "5", name: "Руслан", surname: "Гаврилюк",  middleName: "Андрійович",
       visiting: [new Date("03/04/2022"), new Date("05/05/2022"), new Date("12/04/2022"), new Date("05/09/2022"), new Date("01/05/2022")], 
       lastVisit: new Date("04/03/2022")
     },
-    { id: 6, name: "Георгій", surname: "Редич",  middleName: "Богданович",
+    { id: "6", name: "Георгій", surname: "Редич",  middleName: "Богданович",
       visiting: [new Date("04/04/2022"), new Date("05/05/2022")], 
       lastVisit: new Date("04/04/2022") 
     }
@@ -52,7 +52,16 @@ export class ApiService {
     return this.people;
   }
 
-  public getPerson(id: number) {
+  public getPerson(id: string) {
     return this.people.find(p => p.id === id);
+  }
+
+  public addNewPerson(newPerson: Person) {
+    this.people.push(newPerson);
+  }
+
+  public editPerson(person: Person) {
+    const index = this.people.findIndex(p => p.id === person.id);
+    this.people[index] = person;
   }
 }

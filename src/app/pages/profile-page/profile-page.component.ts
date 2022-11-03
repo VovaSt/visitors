@@ -11,7 +11,7 @@ import { Person } from "../../models/Person.model";
 })
 export class ProfilePageComponent implements OnInit {
 
-  id: number;
+  id: string;
   person: Person;
   visitValue: Date = new Date();
   visiting: Date[] = [];
@@ -24,7 +24,7 @@ export class ProfilePageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = +this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id');
     this.person = this.apiService.getPerson(this.id);
     this.visiting = this.person.visiting;
   }
@@ -36,16 +36,18 @@ export class ProfilePageComponent implements OnInit {
       accept: () => {
         const index = this.person.visiting.indexOf(visit);
         this.person.visiting.splice(index, 1);
+        this.recalculateVisiting();
       }
     });
   }
 
   addVisit() {
     this.visiting.push(this.visitValue);
+    this.recalculateVisiting();
   }
 
   editPerson() {
-    this.router.navigate(["/"]);
+    this.router.navigate(["edit", this.person.id]);
   }
 
   deletePerson() {
@@ -54,5 +56,12 @@ export class ProfilePageComponent implements OnInit {
       message: 'Ви дійсно хочете видалити цей обліковий запис?',
       accept: () => this.router.navigate(["/"])
     });
+  }
+
+  recalculateVisiting() {
+    this.person.visiting = this.visiting;
+    this.person.lastVisit = this.visiting
+      .reduce((a, b) => a.getTime() > b.getTime() ? a : b);
+    this.apiService.editPerson(this.person);
   }
 }
