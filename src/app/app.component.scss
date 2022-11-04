@@ -82,3 +82,7 @@ p-menubar ::ng-deep .p-menubar {
 ::ng-deep .p-toast-icon-close {
   display: none !important;
 }
+
+::ng-deep .ng-trigger.ng-trigger-overlayAnimation.p-datepicker {
+  zoom: 0.85 !important;
+}
