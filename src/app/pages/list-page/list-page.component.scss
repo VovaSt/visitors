@@ -19,3 +19,19 @@
   top: 45px !important;
   left: -50px !important;
 }
+
+::ng-deep .p-paginator-current {
+  width: 100%;
+  border: none !important;
+  color: var(--primary-800) !important;
+  margin-bottom: 10px !important;
+}
+
+::ng-deep .p-paginator-element {
+  color: var(--primary-800) !important;
+}
+
+::ng-deep .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: var(--primary-100) !important;
+  border-color: #dee2e6 !important;
+}

@@ -1,7 +1,7 @@
-<p-card *ngIf="person">
+<p-card *ngIf="person$ | async as person">
   <ng-template pTemplate="header">
     <h3 class="person_name">
-      {{ person.surname }} {{ person.name }} {{ person.middleName }}
+      {{ person.surname }} {{ person.firstName }} {{ person.middleName }}
     </h3>
   </ng-template>
   

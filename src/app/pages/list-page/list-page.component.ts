@@ -22,8 +22,8 @@ export class ListPageComponent implements OnInit {
     this.people$ = this.apiService.getAllPeople();
   }
 
-  getLastVisit(visiting: string[]) {
-    return visiting[0];
+  getLastVisit(visiting: Date[]) {
+    return visiting.reduce((a, b) => a.getTime() > b.getTime() ? a : b);
   }
 
   redirect(id: number) {

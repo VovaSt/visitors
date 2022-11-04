@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Person } from "../models/Person.model";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import {MessageService} from 'primeng/api';
 
 const apiKey = "47YvDyZhHG2Bogw5RcR1Y7SHPTgJiAlb8tHu8ilZ";
 const apiEndpoint = "https://n1i8imf9nd.execute-api.us-east-1.amazonaws.com/PROD";
@@ -9,94 +10,133 @@ const apiEndpoint = "https://n1i8imf9nd.execute-api.us-east-1.amazonaws.com/PROD
 @Injectable()
 export class ApiService {
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'x-api-key': apiKey
-    })
-  }
+  private headers = new HttpHeaders({'x-api-key': apiKey });
 
   private visitors$: BehaviorSubject<Person[]> = new BehaviorSubject<Person[]>([]);
   private isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  // private people: Person[] = [
-  //   { id: "1", name: "Володимир", surname: "Стахов", middleName: "Петрович",
-  //     visiting: [], 
-  //     lastVisit: undefined 
-  //   },
-  //   { id: "2", name: "Тарас", surname: "Шевченко", middleName: "Васильович",
-  //     visiting: [new Date("11/04/2022"), new Date("05/05/2022")], 
-  //     lastVisit: new Date("11/04/2022")
-  //   },
-  //   { id: "3", name: "Андрій", surname: "Миколенко",  middleName: "Миколайович",
-  //     visiting: [new Date("04/07/2022")], 
-  //     lastVisit: new Date("04/07/2022") 
-  //   },
-  //   { id: "4", name: "Сергій", surname: "Крутивус",  middleName: "Генадієвич",
-  //     visiting: [new Date("12/04/2022"), new Date("05/05/2022"), new Date("05/25/2022")], 
-  //     lastVisit:  new Date("04/12/2022")
-  //   },
-  //   { id: "5", name: "Руслан", surname: "Гаврилюк",  middleName: "Андрійович",
-  //     visiting: [new Date("03/04/2022"), new Date("05/05/2022"), new Date("12/04/2022"), new Date("05/09/2022"), new Date("01/05/2022")], 
-  //     lastVisit: new Date("04/03/2022")
-  //   },
-  //   { id: "6", name: "Георгій", surname: "Редич",  middleName: "Богданович",
-  //     visiting: [new Date("04/04/2022"), new Date("05/05/2022")], 
-  //     lastVisit: new Date("04/04/2022") 
-  //   }
-  // ];
+  constructor(
+    private http: HttpClient,
+    private messageService: MessageService
+  ) { }
 
-  constructor(private http: HttpClient) { }
-
-  public isLoading() {
+  public isLoading(): Observable<boolean> {
     return this.isLoading$.asObservable();
+  }
+
+  public getAllPeople(): Observable<Person[]> {
+    return this.visitors$.asObservable();
+  }
+
+  public getPerson(id: string): Observable<Person> {
+    return this.visitors$
+      .asObservable()
+      .pipe(map(d => d.find(p => p.id === id)));
   }
 
   public getSuggestions(query: string): Person[] {
     return this.visitors$.value
       .filter(person => {
-        const name = person.name.toLowerCase();
-        const surname = person.surname.toLowerCase();
-        const middleName = person.middleName.toLowerCase();
+        const name = person.firstName?.toLowerCase() || '';
+        const surname = person.surname?.toLowerCase() || '';
+        const middleName = person.middleName?.toLowerCase() || '';
         const search = query.toLowerCase();
         return name.startsWith(search) || surname.startsWith(search) || middleName.startsWith(search);
       })
       .slice(0, 5)
       .map(person => {
-        person.fullName = `${person.surname} ${person.name} ${person.middleName}`;
+        person.fullName = `${person.surname || ''} ${person.firstName || ''} ${person.middleName || ''}`;
         return person;
       });
   }
 
   public fetchAllPeople() {
     this.isLoading$.next(true);
-    this.http.get<any>(apiEndpoint, this.httpOptions)
-      .subscribe((data) => {
-        this.visitors$.next(JSON.parse(data));
-        this.isLoading$.next(false);
-      });
+    this.http.get<any>(
+      apiEndpoint, 
+      { headers: this.headers }
+    )
+    .pipe(catchError(() => of({ statusCode: 400 })))
+    .subscribe((data) => {
+      const visitors: Person[] = JSON.parse(data);
+      visitors.map(v => {
+        v.visiting = v.visiting.map(d => new Date(d));
+        v.lastVisit = v.lastVisit ? new Date(v.lastVisit) : undefined;
+        return v;
+      })
+      this.visitors$.next(visitors);
+      this.isLoading$.next(false);
+    });
   }
 
-  public getAllPeople() {
-    return this.visitors$;
+  public addNewPerson(newPerson: Person): Observable<boolean> {
+    const request = {...newPerson} as any;
+    request.lastVisit = newPerson.lastVisit || '';
+    return this.http.post<any>(
+      apiEndpoint, 
+      request, 
+      { headers: this.headers }
+    ).pipe(
+      catchError(() => of({ statusCode: 400 })),
+      map((data) => {
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          const visitors = this.visitors$.value;
+          visitors.push(newPerson);
+          this.visitors$.next(visitors);
+          return true;
+        } else {
+          this.messageService.add({severity:'error', summary:'Помилка'});
+          return false;
+        }
+      })
+    );
   }
 
-  public getPerson(id: string) {
-    return this.visitors$.value.find(p => p.id === id);
+  public editPerson(person: Person): Observable<boolean> {
+    const request = {...person} as any;
+    request.lastVisit = person.lastVisit || '';
+    return this.http.put<any>(
+      apiEndpoint, 
+      request,
+      { headers: this.headers }
+    ).pipe(
+      catchError(() => of({ statusCode: 400 })),
+      map((data) => {
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          const visitors = this.visitors$.value;
+          const index = visitors.findIndex(p => p.id === person.id);
+          visitors[index] = person;
+          this.visitors$.next(visitors);
+          this.messageService.add({severity:'success', summary:'Збережено'});
+          return true;
+        } else {
+          this.messageService.add({severity:'error', summary:'Помилка'});
+          return false;
+        }
+      })
+    );
   }
 
-  public addNewPerson(newPerson: Person) {
-    this.http.post<Person[]>(apiEndpoint, newPerson, this.httpOptions)
-      .subscribe(data => {
-        const visitors = this.visitors$.value;
-        visitors.push(newPerson);
-        this.visitors$.next(visitors);
-      });
-  }
-
-  public editPerson(person: Person) {
-    const visitors = this.visitors$.value;
-    const index = visitors.findIndex(p => p.id === person.id);
-    visitors[index] = person;
-    this.visitors$.next(visitors);
+  public deletePerson(id: string): Observable<boolean>  {
+    return this.http.delete<any>(
+      apiEndpoint, 
+      { 
+        headers: this.headers,
+        body: { id }
+      }
+    ).pipe(
+      catchError(() => of({ statusCode: 400 })),
+      map((data) => {
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          const visitors = this.visitors$.value.filter(v => v.id !== id);
+          this.visitors$.next(visitors);
+          this.messageService.add({severity:'success', summary:'Видалено'});
+          return true;
+        } else {
+          this.messageService.add({severity:'error', summary:'Помилка'});
+          return false;
+        }
+      })
+    );
   }
 }

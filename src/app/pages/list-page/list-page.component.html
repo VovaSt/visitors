@@ -1,5 +1,12 @@
 <div class="wrapper" *ngIf="people$ | async as people">
-  <p-table [value]="people" responsiveLayout="scroll">
+  <p-table 
+    [value]="people" 
+    responsiveLayout="scroll"
+    [paginator]="true" 
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{totalRecords} відвудувачів"
+  >
     <ng-template pTemplate="caption">
       Список відвідувачів
     </ng-template>
@@ -25,7 +32,7 @@
       <tr>
         <td>
           <div>{{person.surname}}</div>  
-          <div>{{person.name}}</div>
+          <div>{{person.firstName}}</div>
           <div>{{person.middleName}}</div>
         </td>
         <td class="visit-column">
@@ -43,8 +50,5 @@
         </td>
       </tr>
     </ng-template>
-    <ng-template pTemplate="summary">
-      Всього {{people.length}} відвідувачів
-    </ng-template>
   </p-table>
-</div>s
+</div>

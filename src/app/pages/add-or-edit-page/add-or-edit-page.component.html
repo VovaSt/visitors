@@ -7,7 +7,7 @@
   >
   <input 
     pInputText 
-    [(ngModel)]="name" 
+    [(ngModel)]="firstName" 
     placeholder="Введіть ім'я відвідувача..."
   >
   <input 
@@ -20,6 +20,6 @@
     type="button" 
     class="p-button-success" 
     (click)="addProfile()"
-    [disabled]="!surname && !name && !middleName"
+    [disabled]="!surname || !firstName || !middleName"
   >Зберегти</button>
 </div>

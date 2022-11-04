@@ -16,6 +16,8 @@ import { ConfirmationService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { ApiService } from "./services/api.service";
 
@@ -54,11 +56,13 @@ registerLocaleData(localeUk);
     ConfirmPopupModule,
     CalendarModule,
     InputTextModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ToastModule
   ],
   providers: [
     ApiService,
     ConfirmationService,
+    MessageService,
     { provide: LOCALE_ID, useValue: "uk" }
   ],
   bootstrap: [AppComponent]

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
+import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { Person } from "../../models/Person.model";
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
@@ -12,7 +15,9 @@ import { Person } from "../../models/Person.model";
 export class ProfilePageComponent implements OnInit {
 
   id: string;
+  person$: Observable<Person>;
   person: Person;
+  
   visitValue: Date = new Date();
   visiting: Date[] = [];
 
@@ -25,8 +30,14 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.person = this.apiService.getPerson(this.id);
-    this.visiting = this.person?.visiting || [];
+    this.person$ = this.apiService.getPerson(this.id);
+
+    this.person$
+      .pipe(untilDestroyed(this))
+      .subscribe(data => {
+        this.person = data;
+        this.visiting = data.visiting;
+      });
   }
 
   deleteVisit(event: Event, visit: Date) {
@@ -54,14 +65,22 @@ export class ProfilePageComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target,
       message: 'Ви дійсно хочете видалити цей обліковий запис?',
-      accept: () => this.router.navigate(["/"])
+      accept: () => {
+        this.apiService.deletePerson(this.person.id)
+          .subscribe((response) => response && this.router.navigate(["/"]));
+      }
     });
   }
 
   recalculateVisiting() {
     this.person.visiting = this.visiting;
-    this.person.lastVisit = this.visiting
-      .reduce((a, b) => a.getTime() > b.getTime() ? a : b);
-    this.apiService.editPerson(this.person);
+    if (this.visiting.length > 1) {
+      this.person.lastVisit = this.visiting
+        .reduce((a, b) => a.getTime() > b.getTime() ? a : b)
+    } else {
+      this.person.lastVisit = this.visiting[0]  || undefined;
+    }
+
+    this.apiService.editPerson(this.person).subscribe();
   }
 }
