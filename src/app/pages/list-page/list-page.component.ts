@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
 import { Person } from "../../models/Person.model";
 
@@ -10,7 +11,7 @@ import { Person } from "../../models/Person.model";
 })
 export class ListPageComponent implements OnInit {
 
-  people: Person[] = [];
+  people$: Observable<Person[]>;
 
   constructor(
     private apiService: ApiService,
@@ -18,7 +19,7 @@ export class ListPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.people = this.apiService.getAllPeople();
+    this.people$ = this.apiService.getAllPeople();
   }
 
   getLastVisit(visiting: string[]) {

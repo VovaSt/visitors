@@ -7,4 +7,13 @@
   </ng-template>
 </p-menubar>
 
-<router-outlet></router-outlet>
+<ng-container  *ngIf="!(isLoading$ | async); else loader">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #loader>
+  <div class="spinner-wrapper">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>
+

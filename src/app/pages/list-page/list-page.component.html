@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" *ngIf="people$ | async as people">
   <p-table [value]="people" responsiveLayout="scroll">
     <ng-template pTemplate="caption">
       Список відвідувачів
@@ -47,4 +47,4 @@
       Всього {{people.length}} відвідувачів
     </ng-template>
   </p-table>
-</div>
+</div>s

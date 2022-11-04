@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {MenuItem} from 'primeng/api';
 import { PrimeNGConfig } from 'primeng/api';
+import { Observable } from 'rxjs';
 import { primeNgTranslations } from "./const/primeng-translations";
+import { ApiService } from './services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -11,14 +13,19 @@ import { primeNgTranslations } from "./const/primeng-translations";
 })
 export class AppComponent {
   items: MenuItem[] = [];
+  isLoading$: Observable<boolean>;
 
   constructor(
     private router: Router,
-    private config: PrimeNGConfig
-  ) { }
+    private config: PrimeNGConfig,
+    private apiService: ApiService
+  ) { 
+    this.isLoading$ = this.apiService.isLoading();
+  }
 
   ngOnInit() {
     this.config.setTranslation(primeNgTranslations);
+    this.apiService.fetchAllPeople();
 
     this.items = [
       {

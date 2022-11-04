@@ -26,7 +26,7 @@ export class ProfilePageComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     this.person = this.apiService.getPerson(this.id);
-    this.visiting = this.person.visiting;
+    this.visiting = this.person?.visiting || [];
   }
 
   deleteVisit(event: Event, visit: Date) {
