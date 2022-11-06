@@ -1,5 +1,10 @@
 <p-menubar [model]="items">
   <ng-template pTemplate="end">
+    <div 
+      *ngIf="isInnerLoading$ | async" 
+      class="lds-ring inner-loading"
+    ><div></div><div></div><div></div><div></div></div>
+
     <div class="title-container">
       <span class="main-title">ГУМКА</span>
       <img class="main-icon"src="assets/Logo.svg" alt="">
@@ -13,11 +18,11 @@
 
 <ng-template #loader>
   <div class="spinner-wrapper">
-    <p-progressSpinner></p-progressSpinner>
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
   </div>
 </ng-template>
 
-<p-toast 
+<p-toast
   position="top-center"
   showTransitionOptions="200ms ease-out"  
   hideTransitionOptions="150ms ease-in"

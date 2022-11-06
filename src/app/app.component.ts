@@ -14,6 +14,7 @@ import { ApiService } from './services/api.service';
 export class AppComponent {
   items: MenuItem[] = [];
   isLoading$: Observable<boolean>;
+  isInnerLoading$: Observable<boolean>;
 
   constructor(
     private router: Router,
@@ -21,6 +22,7 @@ export class AppComponent {
     private apiService: ApiService
   ) { 
     this.isLoading$ = this.apiService.isLoading();
+    this.isInnerLoading$ = this.apiService.isInnerLoading();
   }
 
   ngOnInit() {

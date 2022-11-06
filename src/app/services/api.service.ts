@@ -14,6 +14,7 @@ export class ApiService {
 
   private visitors$: BehaviorSubject<Person[]> = new BehaviorSubject<Person[]>([]);
   private isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private isInnerLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -22,6 +23,10 @@ export class ApiService {
 
   public isLoading(): Observable<boolean> {
     return this.isLoading$.asObservable();
+  }
+
+  public isInnerLoading(): Observable<boolean> {
+    return this.isInnerLoading$.asObservable();
   }
 
   public getAllPeople(): Observable<Person[]> {
@@ -56,20 +61,27 @@ export class ApiService {
       apiEndpoint, 
       { headers: this.headers }
     )
-    .pipe(catchError(() => of({ statusCode: 400 })))
+    .pipe(catchError(() => {
+      this.messageService.add({severity:'error', summary:'Помилка'});
+      return of(null);
+    }))
     .subscribe((data) => {
-      const visitors: Person[] = JSON.parse(data);
-      visitors.map(v => {
-        v.visiting = v.visiting.map(d => new Date(d));
-        v.lastVisit = v.lastVisit ? new Date(v.lastVisit) : undefined;
-        return v;
-      })
-      this.visitors$.next(visitors);
+      if (data) {
+        const visitors: Person[] = JSON.parse(data);
+        visitors?.map(v => {
+          v.visiting = v.visiting.map(d => new Date(d));
+          v.lastVisit = v.lastVisit ? new Date(v.lastVisit) : undefined;
+          return v;
+        })
+        this.visitors$.next(visitors || []);
+      }
+
       this.isLoading$.next(false);
     });
   }
 
   public addNewPerson(newPerson: Person): Observable<boolean> {
+    this.isInnerLoading$.next(true);
     const request = {...newPerson} as any;
     request.lastVisit = newPerson.lastVisit || '';
     return this.http.post<any>(
@@ -79,6 +91,7 @@ export class ApiService {
     ).pipe(
       catchError(() => of({ statusCode: 400 })),
       map((data) => {
+        this.isInnerLoading$.next(false);
         if (data.statusCode >= 200 && data.statusCode < 300) {
           const visitors = this.visitors$.value;
           visitors.push(newPerson);
@@ -93,6 +106,7 @@ export class ApiService {
   }
 
   public editPerson(person: Person): Observable<boolean> {
+    this.isInnerLoading$.next(true);
     const request = {...person} as any;
     request.lastVisit = person.lastVisit || '';
     return this.http.put<any>(
@@ -102,6 +116,7 @@ export class ApiService {
     ).pipe(
       catchError(() => of({ statusCode: 400 })),
       map((data) => {
+        this.isInnerLoading$.next(false);
         if (data.statusCode >= 200 && data.statusCode < 300) {
           const visitors = this.visitors$.value;
           const index = visitors.findIndex(p => p.id === person.id);
@@ -118,6 +133,7 @@ export class ApiService {
   }
 
   public deletePerson(id: string): Observable<boolean>  {
+    this.isInnerLoading$.next(true);
     return this.http.delete<any>(
       apiEndpoint, 
       { 
@@ -127,6 +143,7 @@ export class ApiService {
     ).pipe(
       catchError(() => of({ statusCode: 400 })),
       map((data) => {
+        this.isInnerLoading$.next(false);
         if (data.statusCode >= 200 && data.statusCode < 300) {
           const visitors = this.visitors$.value.filter(v => v.id !== id);
           this.visitors$.next(visitors);

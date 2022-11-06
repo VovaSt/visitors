@@ -39,3 +39,10 @@
 ::ng-deep .p-confirm-popup:before {
   display: none;
 }
+
+::ng-deep .p-card {
+  @media screen and (min-width: 961px) {
+    max-width: 920px;
+    margin: 20px auto;
+  }
+}
