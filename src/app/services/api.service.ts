@@ -45,8 +45,14 @@ export class ApiService {
         const name = person.firstName?.toLowerCase() || '';
         const surname = person.surname?.toLowerCase() || '';
         const middleName = person.middleName?.toLowerCase() || '';
+        const full = `${surname} ${name} ${middleName}`;
+        const revertFull = `${name} ${surname}`;
         const search = query.toLowerCase();
-        return name.startsWith(search) || surname.startsWith(search) || middleName.startsWith(search);
+        return name.startsWith(search) || 
+          surname.startsWith(search) || 
+          middleName.startsWith(search) ||
+          full.includes(search) ||
+          revertFull.includes(search);
       })
       .slice(0, 5)
       .map(person => {
